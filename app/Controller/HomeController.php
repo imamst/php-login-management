@@ -2,27 +2,14 @@
 
 namespace ProgrammerZamanNow\MVC\Controller;
 
-use ProgrammerZamanNow\MVC\App;
+use ProgrammerZamanNow\MVC\App\View;
 
 class HomeController
 {
     public function index(): void
     {
-        $model = [
-            'title' => 'Belajar PHP MVC',
-            'content' => 'Selamat belajar PHP MVC dari Programmer Zaman Now'
-        ];
-        
-        View::render("Home/index", $model);
-    }
-
-    public function hello(): void
-    {
-        echo "HomeController.hello()";
-    }
-
-    public function world(): void
-    {
-        echo "HomeController.world()";
+        View::render("Home/index", [
+            'title' => 'PHP Login Management'
+        ]);
     }
 }
