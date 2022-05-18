@@ -1,11 +1,13 @@
 <?php
 
-namespace ProgarmmerZamanNow\MVC\Controller;
+namespace ProgrammerZamanNow\MVC\Controller;
 
-use ProgammerZamanNow\MVC\Config\Database;
-use ProgammerZamanNow\MVC\Repository\UserRepository;
-use ProgammerZamanNow\MVC\Service\UserService;
-use ProgammerZamanNow\MVC\App\View;
+use ProgrammerZamanNow\MVC\Config\Database;
+use ProgrammerZamanNow\MVC\Repository\UserRepository;
+use ProgrammerZamanNow\MVC\Service\UserService;
+use ProgrammerZamanNow\MVC\Model\UserRegisterRequest;
+use ProgrammerZamanNow\MVC\Exception\ValidationException;
+use ProgrammerZamanNow\MVC\App\View;
 
 class UserController
 {
