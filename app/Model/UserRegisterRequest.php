@@ -2,7 +2,7 @@
 
 namespace ProgrammerZamanNow\MVC\Model;
 
-class UseRepositoryRequest
+class UserRegisterRequest
 {
     public ?int $id = null;
     public ?string $name = null;

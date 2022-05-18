@@ -2,9 +2,12 @@
 
 namespace ProgrammerZamanNow\MVC\Service;
 
-use ProgrammerZamanNow\MVC\Service\UserRegisterResponse;
+use ProgrammerZamanNow\MVC\Config\Database;
+use ProgrammerZamanNow\MVC\Domain\User;
+use ProgrammerZamanNow\MVC\Repository\UserRepository;
+use ProgrammerZamanNow\MVC\Model\UserRegisterResponse;
 use ProgrammerZamanNow\MVC\Model\UserRegisterRequest;
-use ProgammerZamanNow\MVC\Exception\ValidationException;
+use ProgrammerZamanNow\MVC\Exception\ValidationException;
 
 class UserService
 {
@@ -31,7 +34,7 @@ class UserService
             $user = new User();
             $user->id = $request->id;
             $user->name = $request->name;
-            $user->password = password_hash($request->id, PASSWORD_BCRYPT);
+            $user->password = password_hash($request->password, PASSWORD_BCRYPT);
 
             $this->userRepository->save($user);
 
