@@ -68,7 +68,7 @@ class UserService
 
             return $response;
         } else {
-            throw new ValidationException("Credentials invlaid");
+            throw new ValidationException("Credentials invalid");
         }
     }
 

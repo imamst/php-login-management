@@ -17,6 +17,7 @@ namespace ProgrammerZamanNow\MVC\Controller {
     use ProgrammerZamanNow\MVC\Repository\UserRepository;
     use ProgrammerZamanNow\MVC\Service\UserService;
     use ProgrammerZamanNow\MVC\Model\UserRegisterRequest;
+    use ProgrammerZamanNow\MVC\Model\UserLoginRequest;
     use ProgrammerZamanNow\MVC\Exception\ValidationException;
     use ProgrammerZamanNow\MVC\Controller\UserController;
 
@@ -80,7 +81,7 @@ namespace ProgrammerZamanNow\MVC\Controller {
             $user = new User();
             $user->id = "imam";
             $user->name = "Imam";
-            $user->password = "12345";
+            $user->password = password_hash("12345", PASSWORD_BCRYPT);
 
             $this->userRepository->save($user);
             
@@ -96,6 +97,79 @@ namespace ProgrammerZamanNow\MVC\Controller {
             $this->expectOutputRegex("[Password]");
             $this->expectOutputRegex("[Register new User]");
             $this->expectOutputRegex("[User Id already exists]");
+        }
+
+        public function testShowLoginFormSuccess()
+        {
+            $this->userController->showLoginForm();
+
+            $this->expectOutputRegex('[Login]');
+            $this->expectOutputRegex("[Id]");
+            $this->expectOutputRegex('[Password]');
+            $this->expectOutputRegex('[Login user]');
+        }
+
+        public function testLoginSuccess()
+        {
+            $user = new User();
+            $user->id = "imam";
+            $user->name = "Imam";
+            $user->password = password_hash("12345", PASSWORD_BCRYPT);
+
+            $this->userRepository->save($user);
+
+            $_POST['id'] = 'imam';
+            $_POST['password'] = '12345';
+
+            $this->userController->login();
+
+            $this->expectOutputRegex('[Location: /]');
+        }
+
+        public function testLoginValidationError()
+        {
+            $_POST['id'] = '';
+            $_POST['password'] = '';
+
+            $this->userController->login();
+
+            $this->expectOutputRegex('[Login user]');
+            $this->expectOutputRegex("[Id]");
+            $this->expectOutputRegex('[Password]');
+            $this->expectOutputRegex('[Id or Password cannot be blank]');
+        }
+
+        public function testLoginNotFound()
+        {
+            $_POST['id'] = 'setiawan';
+            $_POST['password'] = '12345';
+
+            $this->userController->login();
+
+            $this->expectOutputRegex('[Login user]');
+            $this->expectOutputRegex("[Id]");
+            $this->expectOutputRegex('[Password]');
+            $this->expectOutputRegex('[Credentials invalid]');
+        }
+
+        public function testLoginWrongPassword()
+        {
+            $user = new User();
+            $user->id = "imam";
+            $user->name = "Imam";
+            $user->password = password_hash("12345", PASSWORD_BCRYPT);
+
+            $this->userRepository->save($user);
+
+            $_POST['id'] = 'imam';
+            $_POST['password'] = '145';
+
+            $this->userController->login();
+
+            $this->expectOutputRegex('[Login user]');
+            $this->expectOutputRegex("[Id]");
+            $this->expectOutputRegex('[Password]');
+            $this->expectOutputRegex('[Credentials invalid]');
         }
     }
 

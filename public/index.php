@@ -14,5 +14,7 @@ Database::getConnection('prod');
 Router::add('GET', '/', HomeController::class, 'index', []);
 Router::add('GET', '/users/register', UserController::class, 'showRegisterForm', []);
 Router::add('POST', '/users/register', UserController::class, 'register', []);
+Router::add('GET', '/users/login', UserController::class, 'showLoginForm', []);
+Router::add('POST', '/users/login', UserController::class, 'login', []);
 
 Router::run();

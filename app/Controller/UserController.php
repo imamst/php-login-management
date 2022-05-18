@@ -6,6 +6,7 @@ use ProgrammerZamanNow\MVC\Config\Database;
 use ProgrammerZamanNow\MVC\Repository\UserRepository;
 use ProgrammerZamanNow\MVC\Service\UserService;
 use ProgrammerZamanNow\MVC\Model\UserRegisterRequest;
+use ProgrammerZamanNow\MVC\Model\UserLoginRequest;
 use ProgrammerZamanNow\MVC\Exception\ValidationException;
 use ProgrammerZamanNow\MVC\App\View;
 
@@ -40,6 +41,30 @@ class UserController
         } catch (ValidationException $exception) {
             View::render('User/register', [
                 "title" => "Register new User",
+                "error" => $exception->getMessage()
+            ]);
+        }
+    }
+
+    public function showLoginForm()
+    {
+        View::render('User/login', [
+            "title" => "Login user"
+        ]);
+    }
+
+    public function login()
+    {
+        $request = new UserLoginRequest();
+        $request->id = $_POST['id'];
+        $request->password = $_POST['password'];
+
+        try {
+            $this->userService->login($request);
+            View::redirect('/');
+        } catch (ValidationException $exception) {
+            View::render('User/login', [
+                "title" => "Login user",
                 "error" => $exception->getMessage()
             ]);
         }
