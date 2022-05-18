@@ -42,6 +42,7 @@ namespace ProgrammerZamanNow\MVC\Controller {
             $this->userController->showRegisterForm();
 
             $this->expectOutputRegex('[Register]');
+            $this->expectOutputRegex("[Id]");
             $this->expectOutputRegex('[Name]');
             $this->expectOutputRegex('[Password]');
             $this->expectOutputRegex('[Register new User]');
@@ -49,6 +50,7 @@ namespace ProgrammerZamanNow\MVC\Controller {
 
         public function testRegisterSuccess()
         {
+            $_POST['id'] = 'imam';
             $_POST['name'] = 'Imam';
             $_POST['password'] = '12345';
 
@@ -59,22 +61,42 @@ namespace ProgrammerZamanNow\MVC\Controller {
 
         public function testRegisterValidationError()
         {
+            $_POST['id'] = '';
             $_POST['name'] = '';
-            $_POST['password'] = '12345';
+            $_POST['password'] = '';
 
             $this->userController->register();
 
             $this->expectOutputRegex('[Register]');
+            $this->expectOutputRegex("[Id]");
             $this->expectOutputRegex('[Name]');
             $this->expectOutputRegex('[Password]');
             $this->expectOutputRegex('[Register new User]');
-            $this->expectOutputRegex('[Name or Password cannot be blank]');
+            $this->expectOutputRegex('[Id or Name or Password cannot be blank]');
         }
 
-        // public function testRegisterDuplicate()
-        // {
+        public function testRegisterDuplicate()
+        {
+            $user = new User();
+            $user->id = "imam";
+            $user->name = "Imam";
+            $user->password = "12345";
+
+            $this->userRepository->save($user);
             
-        // }
+            $_POST['id'] = "imam";
+            $_POST['name'] = "Imam";
+            $_POST['password'] = "12345";
+
+            $this->userController->register();
+
+            $this->expectOutputRegex("[Register]");
+            $this->expectOutputRegex("[Id]");
+            $this->expectOutputRegex("[Name]");
+            $this->expectOutputRegex("[Password]");
+            $this->expectOutputRegex("[Register new User]");
+            $this->expectOutputRegex("[User Id already exists]");
+        }
     }
 
 }

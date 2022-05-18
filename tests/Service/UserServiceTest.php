@@ -8,6 +8,7 @@ use ProgrammerZamanNow\MVC\Domain\User;
 use ProgrammerZamanNow\MVC\Repository\UserRepository;
 use ProgrammerZamanNow\MVC\Service\UserService;
 use ProgrammerZamanNow\MVC\Model\UserRegisterRequest;
+use ProgrammerZamanNow\MVC\Model\UserLoginRequest;
 use ProgrammerZamanNow\MVC\Exception\ValidationException;
 
 class UserServiceTest extends TestCase
@@ -27,7 +28,7 @@ class UserServiceTest extends TestCase
     public function testRegisterSuccess()
     {
         $request = new UserRegisterRequest();
-        $request->id = 1;
+        $request->id = "imam";
         $request->name = "Imam";
         $request->password = "12345";
 
@@ -45,7 +46,7 @@ class UserServiceTest extends TestCase
         $this->expectException(ValidationException::class);
 
         $request = new UserRegisterRequest();
-        $request->id = 0;
+        $request->id = "";
         $request->name = "";
         $request->password = "";
 
@@ -54,20 +55,68 @@ class UserServiceTest extends TestCase
 
     public function testRegisterDuplicate()
     {
-        $this->expectException(ValidationException::class);
-
         $user = new User();
-        $user->id = 1;
+        $user->id = "imam";
         $user->name = "Imam";
         $user->password = "12345";
 
         $this->userRepository->save($user);
 
+        $this->expectException(ValidationException::class);
+
         $request = new UserRegisterRequest();
-        $request->id = 1;
+        $request->id = "imam";
         $request->name = "Imam";
         $request->password = "12345";
 
         $this->userService->register($request);
+    }
+
+    public function testLoginNotFound()
+    {
+        $this->expectException(ValidationException::class);
+
+        $request = new UserLoginRequest();
+        $request->id = "imam";
+        $request->password = "12345";
+
+        $this->userService->login($request);
+    }
+
+    public function testLoginWrongPassword()
+    {
+        $user = new User();
+        $user->id = "imam";
+        $user->name = "imam";
+        $user->password = password_hash("12345", PASSWORD_BCRYPT);
+
+        $this->userRepository->save($user);
+
+        $this->expectException(ValidationException::class);
+
+        $request = new UserLoginRequest();
+        $request->id = "imam";
+        $request->password = "345";
+
+        $this->userService->login($request);
+    }
+
+    public function testLoginSuccess()
+    {
+        $user = new User();
+        $user->id = "imam";
+        $user->name = "imam";
+        $user->password = password_hash("12345", PASSWORD_BCRYPT);
+
+        $this->userRepository->save($user);
+
+        $request = new UserLoginRequest();
+        $request->id = "imam";
+        $request->password = "12345";
+
+        $response = $this->userService->login($request);
+
+        $this->assertEquals($request->id, $response->user->id);
+        $this->assertTrue(password_verify($request->password, $response->user->password));
     }
 }

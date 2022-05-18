@@ -30,7 +30,7 @@ class UserController
     public function register()
     {
         $request = new UserRegisterRequest();
-        $request->id = null;
+        $request->id = $_POST['id'];
         $request->name = $_POST['name'];
         $request->password = $_POST['password'];
 

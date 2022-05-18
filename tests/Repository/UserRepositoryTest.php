@@ -20,7 +20,7 @@ class UserRepositoryTest extends TestCase
     public function testSaveSuccess()
     {
         $user = new User();
-        $user->id = 1;
+        $user->id = "imam";
         $user->name = "Imam";
         $user->password = "12345";
 

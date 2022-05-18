@@ -16,6 +16,10 @@
         <div class="col-md-10 mx-auto col-lg-5">
             <form class="p-4 p-md-5 border rounded-3 bg-light" method="post" action="/users/register">
                 <div class="form-floating mb-3">
+                    <input name="id" type="text" class="form-control" id="id" placeholder="id" value="<?= $_POST['id'] ?? '' ?>">
+                    <label for="id">Id</label>
+                </div>
+                <div class="form-floating mb-3">
                     <input name="name" type="text" class="form-control" id="name" placeholder="name" value="<?= $_POST['name'] ?? '' ?>">
                     <label for="name">Name</label>
                 </div>
