@@ -2,6 +2,11 @@
 
 namespace ProgrammerZamanNow\MVC\Service;
 
+use ProgrammerZamanNow\MVC\Domain\User;
+use ProgrammerZamanNow\MVC\Domain\Session;
+use ProgrammerZamanNow\MVC\Repository\UserRepository;
+use ProgrammerZamanNow\MVC\Repository\SessionRepository;
+
 class SessionService
 {
     public static string $COOKIE_NAME = 'X-PZN-SESSION';
