@@ -1,12 +1,20 @@
 <?php
 
 namespace ProgrammerZamanNow\MVC\App {
-    
+
     // untuk mengatasi error phpunit 'cannot modify header...' saat menemui redirect dengan header('Location: //')
     function header(string $value) {
         echo $value;
     }
 
+}
+
+namespace ProgrammerZamanNow\MVC\Service {
+
+    function setcookie(string $name, string $value)
+    {
+        echo "$name: $value";
+    }
 }
 
 namespace ProgrammerZamanNow\MVC\Controller {
@@ -15,6 +23,7 @@ namespace ProgrammerZamanNow\MVC\Controller {
     use ProgrammerZamanNow\MVC\Config\Database;
     use ProgrammerZamanNow\MVC\Domain\User;
     use ProgrammerZamanNow\MVC\Repository\UserRepository;
+    use ProgrammerZamanNow\MVC\Repository\SessionRepository;
     use ProgrammerZamanNow\MVC\Service\UserService;
     use ProgrammerZamanNow\MVC\Model\UserRegisterRequest;
     use ProgrammerZamanNow\MVC\Model\UserLoginRequest;
@@ -25,6 +34,7 @@ namespace ProgrammerZamanNow\MVC\Controller {
     {
         private UserController $userController;
         private UserRepository $userRepository;
+        private SessionRepository $sessionRepository;
 
         public function setUp(): void
         {
@@ -32,7 +42,9 @@ namespace ProgrammerZamanNow\MVC\Controller {
 
             $connection = Database::getConnection();
             $this->userRepository = new UserRepository($connection);
+            $this->sessionRepository = new SessionRepository($connection);
             
+            $this->sessionRepository->deleteAll();
             $this->userRepository->deleteAll();
 
             putenv("mode=test");
