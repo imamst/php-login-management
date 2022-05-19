@@ -4,7 +4,9 @@ namespace ProgrammerZamanNow\MVC\Controller;
 
 use ProgrammerZamanNow\MVC\Config\Database;
 use ProgrammerZamanNow\MVC\Repository\UserRepository;
+use ProgrammerZamanNow\MVC\Repository\SessionRepository;
 use ProgrammerZamanNow\MVC\Service\UserService;
+use ProgrammerZamanNow\MVC\Service\SessionService;
 use ProgrammerZamanNow\MVC\Model\UserRegisterRequest;
 use ProgrammerZamanNow\MVC\Model\UserLoginRequest;
 use ProgrammerZamanNow\MVC\Exception\ValidationException;
@@ -13,12 +15,16 @@ use ProgrammerZamanNow\MVC\App\View;
 class UserController
 {
     private UserService $userService;
+    private SessionService $sessionService;
 
     public function __construct()
     {
         $connection = Database::getConnection();
         $userRepository = new UserRepository($connection);
         $this->userService = new UserService($userRepository);
+
+        $sessionRepository = new SessionRepository($connection);
+        $this->sessionService = new SessionService($sessionRepository, $userRepository);
     }
 
     public function showRegisterForm()
@@ -60,7 +66,9 @@ class UserController
         $request->password = $_POST['password'];
 
         try {
-            $this->userService->login($request);
+            $response = $this->userService->login($request);
+            $this->sessionService->create($response->user->id);
+
             View::redirect('/');
         } catch (ValidationException $exception) {
             View::render('User/login', [
