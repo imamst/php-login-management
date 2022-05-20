@@ -136,6 +136,7 @@ namespace ProgrammerZamanNow\MVC\Controller {
             $this->userController->login();
 
             $this->expectOutputRegex('[Location: /]');
+            $this->expectOutputRegex('[X-PZN-SESSION: ]');
         }
 
         public function testLoginValidationError()
