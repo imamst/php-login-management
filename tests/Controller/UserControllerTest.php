@@ -22,9 +22,11 @@ namespace ProgrammerZamanNow\MVC\Controller {
     use PHPUnit\Framework\TestCase;
     use ProgrammerZamanNow\MVC\Config\Database;
     use ProgrammerZamanNow\MVC\Domain\User;
+    use ProgrammerZamanNow\MVC\Domain\Session;
     use ProgrammerZamanNow\MVC\Repository\UserRepository;
     use ProgrammerZamanNow\MVC\Repository\SessionRepository;
     use ProgrammerZamanNow\MVC\Service\UserService;
+    use ProgrammerZamanNow\MVC\Service\SessionService;
     use ProgrammerZamanNow\MVC\Model\UserRegisterRequest;
     use ProgrammerZamanNow\MVC\Model\UserLoginRequest;
     use ProgrammerZamanNow\MVC\Exception\ValidationException;
@@ -183,6 +185,28 @@ namespace ProgrammerZamanNow\MVC\Controller {
             $this->expectOutputRegex("[Id]");
             $this->expectOutputRegex('[Password]');
             $this->expectOutputRegex('[Credentials invalid]');
+        }
+
+        public function testLogout()
+        {
+            $user = new User();
+            $user->id = "imam";
+            $user->name = "Imam";
+            $user->password = password_hash("12345", PASSWORD_BCRYPT);
+            $this->userRepository->save($user);
+
+            $session = new Session();
+            $session->id = uniqid();
+            $session->userId = "imam";
+
+            $this->sessionRepository->save($session);
+
+            $_COOKIE[SessionService::$COOKIE_NAME] = $session->id;
+
+            $this->userController->logout();
+
+            $this->expectOutputRegex('[Location: /]');
+            $this->expectOutputRegex('[X-PZN-SESSION: ]');
         }
     }
 
