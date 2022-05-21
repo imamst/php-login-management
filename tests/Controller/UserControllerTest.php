@@ -1,23 +1,10 @@
 <?php
 
-namespace ProgrammerZamanNow\MVC\App {
-
-    // untuk mengatasi error phpunit 'cannot modify header...' saat menemui redirect dengan header('Location: //')
-    function header(string $value) {
-        echo $value;
-    }
-
-}
-
-namespace ProgrammerZamanNow\MVC\Service {
-
-    function setcookie(string $name, string $value)
-    {
-        echo "$name: $value";
-    }
-}
-
 namespace ProgrammerZamanNow\MVC\Controller {
+
+    // handle setcookie (header manipulation)
+    // untuk mengatasi error phpunit 'cannot modify header...' saat menemui redirect dengan header('Location: /')
+    require_once __DIR__ . '/../Helper/helper.php';
 
     use PHPUnit\Framework\TestCase;
     use ProgrammerZamanNow\MVC\Config\Database;

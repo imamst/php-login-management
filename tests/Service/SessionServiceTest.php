@@ -2,6 +2,9 @@
 
 namespace ProgrammerZamanNow\MVC\Service;
 
+// handle setcookie (header manipulation)
+require_once __DIR__ . '/../Helper/helper.php';
+
 use PHPUnit\Framework\TestCase;
 use ProgrammerZamanNow\MVC\Config\Database;
 use ProgrammerZamanNow\MVC\Domain\User;
@@ -9,12 +12,6 @@ use ProgrammerZamanNow\MVC\Domain\Session;
 use ProgrammerZamanNow\MVC\Repository\UserRepository;
 use ProgrammerZamanNow\MVC\Repository\SessionRepository;
 use ProgrammerZamanNow\MVC\Service\SessionService;
-
-// handle setcookie (header manipulation)
-function setcookie(string $name, string $value)
-{
-    echo "$name: $value";
-}
 
 class SessionServiceTest extends TestCase
 {
