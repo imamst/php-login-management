@@ -8,8 +8,8 @@ use ProgrammerZamanNow\MVC\Controller\{
     HomeController,
     UserController
 };
-use ProgrammerZamanNow\Middleware\MustLoginMiddleware;
-use ProgrammerZamanNow\Middleware\MustNotLoginMiddleware;
+use ProgrammerZamanNow\MVC\Middleware\MustLoginMiddleware;
+use ProgrammerZamanNow\MVC\Middleware\MustNotLoginMiddleware;
 
 Database::getConnection('prod');
 
