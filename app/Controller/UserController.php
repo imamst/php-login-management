@@ -7,8 +7,9 @@ use ProgrammerZamanNow\MVC\Repository\UserRepository;
 use ProgrammerZamanNow\MVC\Repository\SessionRepository;
 use ProgrammerZamanNow\MVC\Service\UserService;
 use ProgrammerZamanNow\MVC\Service\SessionService;
-use ProgrammerZamanNow\MVC\Model\UserRegisterRequest;
 use ProgrammerZamanNow\MVC\Model\UserLoginRequest;
+use ProgrammerZamanNow\MVC\Model\UserRegisterRequest;
+use ProgrammerZamanNow\MVC\Model\UserUpdateProfileRequest;
 use ProgrammerZamanNow\MVC\Exception\ValidationException;
 use ProgrammerZamanNow\MVC\App\View;
 
@@ -83,5 +84,42 @@ class UserController
         $this->sessionService->destroy();
 
         View::redirect('/');
+    }
+
+    public function showUpdateProfileForm()
+    {
+        $user = $this->sessionService->current();
+
+        View::render('/User/profile', [
+            'title' => 'Update user profile',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name
+            ]
+        ]);
+    }
+
+    public function updateProfile()
+    {
+        $user = $this->sessionService->current();
+
+        $request = new UserUpdateProfileRequest();
+        $request->id = $user->id;
+        $request->name = $_POST['name'];
+
+        try {
+            $this->userService->updateProfile($request);
+
+            View::redirect('/');
+        } catch (\Exception $exception) {
+            View::render('/User/profile', [
+                'title' => 'Update user profile',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name
+                ],
+                "error" => $exception->getMessage()
+            ]);
+        }
     }
 }
