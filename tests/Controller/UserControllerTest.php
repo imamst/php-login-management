@@ -285,6 +285,114 @@ namespace ProgrammerZamanNow\MVC\Controller {
             $this->expectOutputRegex('[imam]');
             $this->expectOutputRegex('[Name]');
         }
+
+        public function testShowUpdatePasswordForm()
+        {
+            $user = new User();
+            $user->id = "imam";
+            $user->name = "Imam";
+            $user->password = password_hash("12345", PASSWORD_BCRYPT);
+            $this->userRepository->save($user);
+
+            $session = new Session();
+            $session->id = uniqid();
+            $session->userId = "imam";
+
+            $this->sessionRepository->save($session);
+
+            $_COOKIE[SessionService::$COOKIE_NAME] = $session->id;
+
+            $this->userController->showUpdatePasswordForm();
+
+            $this->expectOutputRegex('[Update user password]');
+            $this->expectOutputRegex("[Id]");
+            $this->expectOutputRegex('[imam]');
+            $this->expectOutputRegex('[Old Password]');
+            $this->expectOutputRegex('[New Password]');
+        }
+
+        public function testUpdatePasswordSuccess()
+        {
+            $user = new User();
+            $user->id = "imam";
+            $user->name = "Imam";
+            $user->password = password_hash("12345", PASSWORD_BCRYPT);
+            $this->userRepository->save($user);
+
+            $session = new Session();
+            $session->id = uniqid();
+            $session->userId = "imam";
+
+            $this->sessionRepository->save($session);
+
+            $_COOKIE[SessionService::$COOKIE_NAME] = $session->id;
+
+            $_POST['oldPassword'] = "12345";
+            $_POST['newPassword'] = "67890";
+            $this->userController->updatePassword();
+
+            $this->expectOutputRegex('[Location: /]');
+
+            $result = $this->userRepository->findById($user->id);
+
+            $this->assertTrue(password_verify($_POST['newPassword'], $result->password));
+        }
+
+        public function testUpdatePasswordValidationError()
+        {
+            $user = new User();
+            $user->id = "imam";
+            $user->name = "Imam";
+            $user->password = password_hash("12345", PASSWORD_BCRYPT);
+            $this->userRepository->save($user);
+
+            $session = new Session();
+            $session->id = uniqid();
+            $session->userId = "imam";
+
+            $this->sessionRepository->save($session);
+
+            $_COOKIE[SessionService::$COOKIE_NAME] = $session->id;
+
+            $_POST['oldPassword'] = "";
+            $_POST['newPassword'] = "";
+            $this->userController->updatePassword();
+
+            $this->expectOutputRegex('[Id, old password or new password cannot be blank]');
+            $this->expectOutputRegex('[Update user profile]');
+            $this->expectOutputRegex("[Id]");
+            $this->expectOutputRegex('[imam]');
+            $this->expectOutputRegex('[Old Password]');
+            $this->expectOutputRegex('[New Password]');
+        }
+
+        public function testUpdatePasswordIncorrectOldPassword()
+        {
+            $user = new User();
+            $user->id = "imam";
+            $user->name = "Imam";
+            $user->password = password_hash("12345", PASSWORD_BCRYPT);
+            $this->userRepository->save($user);
+
+            $session = new Session();
+            $session->id = uniqid();
+            $session->userId = "imam";
+
+            $this->sessionRepository->save($session);
+
+            $_COOKIE[SessionService::$COOKIE_NAME] = $session->id;
+
+            $_POST['oldPassword'] = "67890";
+            $_POST['newPassword'] = "67890";
+            $this->userController->updatePassword();
+
+            $this->expectOutputRegex('[Old password incorrect]');
+            $this->expectOutputRegex('[Update user profile]');
+            $this->expectOutputRegex("[Id]");
+            $this->expectOutputRegex('[imam]');
+            $this->expectOutputRegex('[Old Password]');
+            $this->expectOutputRegex('[New Password]');
+        }
     }
 
 }

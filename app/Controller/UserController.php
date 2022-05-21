@@ -9,6 +9,7 @@ use ProgrammerZamanNow\MVC\Service\UserService;
 use ProgrammerZamanNow\MVC\Service\SessionService;
 use ProgrammerZamanNow\MVC\Model\UserLoginRequest;
 use ProgrammerZamanNow\MVC\Model\UserRegisterRequest;
+use ProgrammerZamanNow\MVC\Model\UserUpdatePasswordRequest;
 use ProgrammerZamanNow\MVC\Model\UserUpdateProfileRequest;
 use ProgrammerZamanNow\MVC\Exception\ValidationException;
 use ProgrammerZamanNow\MVC\App\View;
@@ -119,6 +120,40 @@ class UserController
                     'name' => $user->name
                 ],
                 "error" => $exception->getMessage()
+            ]);
+        }
+    }
+
+    public function showUpdatePasswordForm()
+    {
+        $user = $this->sessionService->current();
+
+        View::render('/User/password', [
+            'title' => 'Update user password',
+            'userId' => $user->id
+        ]);
+    }
+
+    public function updatePassword()
+    {
+        $user = $this->sessionService->current();
+
+        $request = new UserUpdatePasswordRequest();
+        $request->id = $user->id;
+        $request->oldPassword = $_POST['oldPassword'];
+        $request->newPassword = $_POST['newPassword'];
+
+        try {
+            $this->userService->updatePassword($request);
+
+            View::redirect('/');
+        } catch (\Exception $exception) {
+            View::render('/User/password', [
+                'title' => 'Update user password',
+                'user' => [
+                    'id' => $user->id
+                ],
+                'error' => $exception->getMessage()
             ]);
         }
     }

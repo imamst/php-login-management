@@ -21,5 +21,7 @@ Router::add('POST', '/users/login', UserController::class, 'login', [MustNotLogi
 Router::add('GET', '/users/logout', UserController::class, 'logout', [MustLoginMiddleware::class]);
 Router::add('GET', '/users/profile', UserController::class, 'showUpdateProfileForm', [MustLoginMiddleware::class]);
 Router::add('POST', '/users/profile', UserController::class, 'updateProfile', [MustLoginMiddleware::class]);
+Router::add('GET', '/users/password', UserController::class, 'showUpdatePasswordForm', [MustLoginMiddleware::class]);
+Router::add('POST', '/users/password', UserController::class, 'updatePassword', [MustLoginMiddleware::class]);
 
 Router::run();
