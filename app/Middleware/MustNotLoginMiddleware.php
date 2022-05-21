@@ -1,13 +1,13 @@
 <?php
 
-namespace ProgrammerZamanNow\Middleware;
+namespace ProgrammerZamanNow\MVC\Middleware;
 
-use ProgrammerZamanNow\App\View;
-use ProgrammerZamanNow\Config\Database;
-use ProgrammerZamanNow\Middleware\Middleware;
-use ProgrammerZamanNow\Repository\UserRepository;
-use ProgrammerZamanNow\Repository\SessionRepository;
-use ProgrammerZamanNow\Service\SessionService;
+use ProgrammerZamanNow\MVC\App\View;
+use ProgrammerZamanNow\MVC\Config\Database;
+use ProgrammerZamanNow\MVC\Middleware\Middleware;
+use ProgrammerZamanNow\MVC\Repository\UserRepository;
+use ProgrammerZamanNow\MVC\Repository\SessionRepository;
+use ProgrammerZamanNow\MVC\Service\SessionService;
 
 class MustNotLoginMiddleware implements Middleware
 {
@@ -20,12 +20,12 @@ class MustNotLoginMiddleware implements Middleware
         $this->sessionService = new SessionService($sessionRepository, $userRepository);
     }
 
-    public function before()
+    public function before(): void
     {
         $user = $this->sessionService->current();
 
         if ($user != null) {
-            View::render('/');
+            View::redirect('/');
         }
     }
 }
